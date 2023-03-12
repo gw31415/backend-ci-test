@@ -9,9 +9,7 @@ urlpatterns = [
     path("login/", views.LoginView.as_view(), name="login"),
     path("logout/", views.LogoutView.as_view(), name="logout"),
     # path("home/", views.HomeView.as_view(), name="home"),
-    path(
-        "<str:username>/profile/", views.UserProfileView.as_view(), name="user_profile"
-    ),
+    path("<str:username>/profile/", views.UserProfileView.as_view(), name="user_profile"),
     # path('profile/edit/', views.UserProfileEditView.as_view(), name='user_profile_edit'),
     path(
         "<str:username>/following_list/",

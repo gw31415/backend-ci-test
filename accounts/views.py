@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.auth import authenticate, get_user_model, login
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Count, Exists, OuterRef
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
@@ -47,8 +48,18 @@ class UserProfileView(LoginRequiredMixin, ListView):
     def get_queryset(self, **kwargs):
         username = self.kwargs.get("username")
         user = get_object_or_404(User, username=username)  # Userオブジェクトを取得
-        queryset = self.queryset.filter(user=user).order_by(  # Userオブジェクトでフィルター
-            "-created_at"
+        queryset = (
+            self.queryset.filter(user=user)  # Userオブジェクトでフィルター
+            .order_by("-created_at")
+            .annotate(
+                like_counts=Count("liked_by"),
+                is_liked=Exists(
+                    Tweet.objects.filter(
+                        pk=OuterRef("pk"),
+                        liked_by=self.request.user,
+                    ),
+                ),
+            )
         )
         return queryset
 

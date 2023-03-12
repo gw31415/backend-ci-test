@@ -2,8 +2,8 @@
 {% block title %} {{ username }}のプロフィール{% endblock %}
 {% block h1 %}{{ username }}のプロフィール{% endblock %}
 
-{% block content %}
-<div class="container">
+	{% block content %}
+	<div class="container">
   <h1 class="my-5"></h1>
   <p>{{ username }}さん</p>
   <a href="{% url 'tweets:home' %}">ホーム</a>
@@ -35,6 +35,7 @@
       <th>内容</th>
       <th>作成日</th>
       <th>ユーザー</th>
+      <th>いいね</th>
       <th>削除</th>
     </tr>
     {% for tweet in object_list %}
@@ -43,8 +44,24 @@
       <td><a href={% url 'tweets:detail' tweet.id %}>{{ tweet.content }}</a></td>
       <td>{{ tweet.created_at }}</td>
       <td><a href={% url 'accounts:user_profile' tweet.user %}>{{ tweet.user }}</td>
-    {% if tweet.user == request.user %}
-    <td>
+	  <td>
+          {{ tweet.like_counts }}
+		  {% if tweet.is_liked %}
+		  <form method="post" action="{% url 'tweets:unlike' tweet.id %}">
+			  {% csrf_token %}
+			  <button type="submit" class="btn btn-primary">
+				  Unlike
+				  {% else %}
+				  <form method="post" action="{% url 'tweets:like' tweet.id %}">
+					  {% csrf_token %}
+					  <button type="submit" class="btn btn-primary">
+						  Like
+						  {% endif %}
+					  </button>
+				  </form>
+    </td>
+		{% if tweet.user == request.user %}
+		<td>
       <form action="{% url 'tweets:delete' tweet.id %}" method="POST">
         {% csrf_token %}
         <button type="submit">削除</button>
