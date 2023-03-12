@@ -13,8 +13,6 @@ jobs:
       ACTION_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
       - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
       - name: Set up Python 3.11
         uses: actions/setup-python@v4
         with:
