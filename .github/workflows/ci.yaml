@@ -39,7 +39,7 @@ jobs:
           || (gh pr comment ${{ github.event.pull_request.number }} -b "Django設定のチェックに失敗しました。[CI実行のログ](${{ env.ACTION_URL }})を確認して修正し，再度コミット・プッシュしてください。" && exit 1)
       - name: Migration Diff
         run: |
-          git diff --diff-filter=MD --exit-code ${base_branch} **/migrations/*.py \
+          git diff --diff-filter=MD --exit-code ${{ github.base_ref }} **/migrations/*.py \
           || (gh pr comment ${{ github.event.pull_request.number }} -b "一度mainに取り込まれたmigrationファイルを編集してはいけません。元の状態を復元した上で，migration作成を行い直してください。[該当ファイル](${{ env.ACTION_URL }})" && exit 1)
   django-test:
     name: Django Test
